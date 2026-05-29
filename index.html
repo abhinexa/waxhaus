@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WAXHAUS — Record Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+@font-face {
+  font-family: 'George';
+  src: local('Georgia');
+  /* Replace: url('/fonts/George-Regular.woff2') format('woff2'); */
+}
+@font-face {
+  font-family: 'BBTorsosPro';
+  src: local('Arial Black');
+  /* Replace: url('/fonts/BBTorsosPro-SemiBold.woff2') format('woff2'); */
+}
+
+/* ── PALETTE ────────────────────────────────────────────────────────────── */
+:root {
+  /* Wood tones */
+  --wood-light:  #f2e8d9;   /* pale birch — page bg */
+  --wood-mid:    #e0ceB4;   /* warm oak — cards */
+  --wood-warm:   #c8a97a;   /* medium walnut — borders, accents */
+  --wood-dark:   #7a5230;   /* dark walnut — headings */
+  --wood-deep:   #4a3018;   /* espresso — footers, nav */
+
+  /* Red accents */
+  --red:         #c8180e;
+  --red-hot:     #e52b1f;
+  --red-dim:     #9e140a;
+
+  /* Neutrals */
+  --ink:         #2a1a0e;   /* body text */
+  --ink-dim:     #7a6050;   /* muted text */
+  --cream:       #faf5ec;   /* lightest bg */
+
+  /* Borders */
+  --border:      #c8a97a55;
+  --border-dark: #c8a97a99;
+
+  --font-display: 'BBTorsosPro', 'Barlow Condensed', 'Arial Black', sans-serif;
+  --font-body:    'George', 'Cormorant Garamond', Georgia, serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: auto; }
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(
+      92deg,
+      transparent 0px,
+      transparent 18px,
+      rgba(120,70,20,0.018) 18px,
+      rgba(120,70,20,0.018) 19px
+    ),
+    repeating-linear-gradient(
+      88deg,
+      transparent 0px,
+      transparent 38px,
+      rgba(100,55,15,0.012) 38px,
+      rgba(100,55,15,0.012) 40px
+    );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── NAV ────────────────────────────────────────────────────────────────── */
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  height: 66px;
+  background: var(--wood-deep);
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  border-bottom: 3px solid var(--red);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 0.14em;
+  color: var(--cream);
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.logo span { color: var(--red); }
+
+nav ul { display: flex; gap: 2.8rem; list-style: none; }
+nav ul a {
+  font-family: var(--font-display);
+  color: var(--wood-mid);
+  text-decoration: none;
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+nav ul a:hover { color: var(--cream); }
+
+.nav-cart {
+  display: flex; align-items: center; gap: 0.5rem;
+  background: var(--red);
+  color: var(--cream);
+  border: none;
+  padding: 0.5rem 1.3rem;
+  font-family: var(--font-display);
+  font-size: 0.76rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.nav-cart:hover { background: var(--red-hot); }
+
+#cart-count {
+  background: var(--cream);
+  color: var(--red);
+  border-radius: 50%;
+  width: 18px; height: 18px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.62rem; font-weight: 700;
+}
+
+/* ── HERO ───────────────────────────────────────────────────────────────── */
+.hero {
+  min-height: 88vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 0 3rem;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-dark);
+
+  background:
+    repeating-linear-gradient(
+      91deg,
+      transparent 0px, transparent 22px,
+      rgba(100,60,20,0.025) 22px, rgba(100,60,20,0.025) 24px
+    ),
+    repeating-linear-gradient(
+      89deg,
+      transparent 0px, transparent 55px,
+      rgba(80,45,10,0.015) 55px, rgba(80,45,10,0.015) 58px
+    ),
+    linear-gradient(160deg, #f8f0e0 0%, #ecdfc6 45%, #e4d4b2 100%);
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 35%; height: 6px;
+  background: var(--red);
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 1.4rem;
+}
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 8.5vw, 8rem);
+  line-height: 0.88;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--wood-deep);
+  margin-bottom: 1.8rem;
+}
+.hero h1 .red { color: var(--red); }
+.hero h1 .serif {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 0.82em;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  color: var(--wood-dark);
+}
+
+.hero-desc {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--ink-dim);
+  line-height: 1.75;
+  max-width: 380px;
+  margin-bottom: 2.5rem;
+}
+
+.hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+.btn-primary {
+  background: var(--red);
+  color: var(--cream);
+  border: none;
+  padding: 0.9rem 2.2rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.btn-primary:hover { background: var(--red-hot); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--wood-dark);
+  border: 1.5px solid var(--wood-warm);
+  padding: 0.9rem 2.2rem;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.btn-ghost:hover { border-color: var(--wood-dark); color: var(--wood-deep); background: rgba(120,70,20,0.06); }
+
+/* ── VINYL SCENE ────────────────────────────────────────────────────────── */
+.hero-vinyl-scene {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 400px;
+}
+
+.tonearm {
+  position: absolute;
+  top: 12%;
+  right: 8%;
+  width: 130px;
+  height: 130px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tonearm-pivot {
+  position: absolute;
+  top: 0; right: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #d4a060, var(--wood-dark));
+  border: 2px solid var(--wood-warm);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  z-index: 2;
+}
+
+.tonearm-arm {
+  position: absolute;
+  top: 11px; right: 11px;
+  width: 110px; height: 3px;
+  background: linear-gradient(90deg, var(--wood-warm), var(--wood-dark));
+  transform-origin: right center;
+  transform: rotate(-32deg);
+  border-radius: 2px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+.tonearm-head {
+  position: absolute;
+  left: 0; top: -5px;
+  width: 14px; height: 12px;
+  background: var(--wood-deep);
+  border-radius: 2px;
+}
+
+.vinyl-disc-wrap {
+  position: relative;
+  width: min(52vw, 420px);
+  height: min(52vw, 420px);
+}
+
+.vinyl-disc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  animation: vinylSpin 2.8s linear infinite;
+  position: relative;
+  box-shadow:
+    0 8px 40px rgba(80,40,10,0.28),
+    0 2px 12px rgba(80,40,10,0.18),
+    inset 0 0 30px rgba(0,0,0,0.3);
+}
+
+.vinyl-disc .grooves {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from 0deg,
+      #1a0f0a 0deg,  #221408 20deg,
+      #1a0f0a 40deg, #221408 60deg,
+      #1a0f0a 80deg, #221408 100deg,
+      #1a0f0a 120deg,#221408 140deg,
+      #1a0f0a 160deg,#221408 180deg,
+      #1a0f0a 200deg,#221408 220deg,
+      #1a0f0a 240deg,#221408 260deg,
+      #1a0f0a 280deg,#221408 300deg,
+      #1a0f0a 320deg,#221408 340deg,
+      #1a0f0a 360deg
+    );
+}
+
+.vinyl-disc .rings {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, transparent 28%, rgba(255,255,255,0.015) 28.5%, transparent 29%),
+    radial-gradient(circle, transparent 33%, rgba(255,255,255,0.012) 33.5%, transparent 34%),
+    radial-gradient(circle, transparent 38%, rgba(255,255,255,0.015) 38.5%, transparent 39%),
+    radial-gradient(circle, transparent 43%, rgba(255,255,255,0.01)  43.5%, transparent 44%),
+    radial-gradient(circle, transparent 48%, rgba(255,255,255,0.014) 48.5%, transparent 49%),
+    radial-gradient(circle, transparent 52%, rgba(255,255,255,0.01)  52.5%, transparent 53%),
+    radial-gradient(circle, transparent 57%, rgba(255,255,255,0.013) 57.5%, transparent 58%),
+    radial-gradient(circle, transparent 62%, rgba(255,255,255,0.01)  62.5%, transparent 63%),
+    radial-gradient(circle, transparent 67%, rgba(255,255,255,0.012) 67.5%, transparent 68%),
+    radial-gradient(circle, transparent 72%, rgba(255,255,255,0.01)  72.5%, transparent 73%),
+    radial-gradient(circle, transparent 77%, rgba(255,255,255,0.014) 77.5%, transparent 78%),
+    radial-gradient(circle, transparent 82%, rgba(255,255,255,0.01)  82.5%, transparent 83%),
+    radial-gradient(circle, transparent 87%, rgba(255,255,255,0.012) 87.5%, transparent 88%);
+}
+
+.vinyl-disc .disc-label {
+  position: absolute;
+  inset: 31%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #d4622a, var(--red-dim));
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2;
+  box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.disc-label-text {
+  font-family: var(--font-display);
+  font-size: clamp(0.45rem, 1vw, 0.75rem);
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  text-transform: uppercase;
+  line-height: 1.5;
+}
+
+.vinyl-disc .disc-hole {
+  position: absolute;
+  inset: 47.5%;
+  border-radius: 50%;
+  background: var(--cream);
+  z-index: 3;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.vinyl-disc .sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255,255,255,0.06) 45deg,
+    transparent 90deg,
+    rgba(255,255,255,0.03) 180deg,
+    transparent 270deg
+  );
+  z-index: 4;
+  pointer-events: none;
+}
+
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.vinyl-disc-wrap::after {
+  content: '';
+  position: absolute;
+  bottom: -24px;
+  left: 10%; right: 10%;
+  height: 24px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(80,40,10,0.22) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ── FORMAT STRIP ───────────────────────────────────────────────────────── */
+.format-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--wood-deep);
+  border-bottom: 3px solid var(--wood-dark);
+}
+
+.fsi {
+  padding: 2rem 2.8rem;
+  border-right: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}
+.fsi:last-child { border-right: none; }
+.fsi:hover { background: rgba(200,24,14,0.12); }
+
+.fsi-icon { font-size: 1.9rem; color: var(--red); flex-shrink: 0; line-height: 1; }
+
+.fsi-label {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 0.2rem;
+}
+.fsi-desc {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--wood-mid);
+  line-height: 1.5;
+}
+
+/* ── SECTION ────────────────────────────────────────────────────────────── */
+.section { padding: 4.5rem 3rem; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 2px solid var(--wood-warm);
+  padding-bottom: 1rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--wood-deep);
+}
+
+.section-count {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
+/* ── TABS ───────────────────────────────────────────────────────────────── */
+.format-tabs { display: flex; margin-bottom: 2.5rem; flex-wrap: wrap; }
+
+.tab {
+  padding: 0.6rem 1.6rem;
+  background: transparent;
+  border: 1.5px solid var(--border-dark);
+  color: var(--ink-dim);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-left: -1.5px;
+}
+.tab:first-child { margin-left: 0; }
+.tab.active { background: var(--red); color: var(--cream); border-color: var(--red); z-index: 1; }
+.tab:hover:not(.active) { background: rgba(120,60,20,0.08); color: var(--wood-deep); border-color: var(--wood-warm); }
+
+/* ── SEARCH ─────────────────────────────────────────────────────────────── */
+.search-bar { display: flex; max-width: 480px; margin-bottom: 2.5rem; }
+
+.search-input {
+  flex: 1;
+  background: var(--wood-light);
+  border: 1.5px solid var(--border-dark);
+  border-right: none;
+  color: var(--ink);
+  padding: 0.7rem 1rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+}
+.search-input:focus { border-color: var(--red); }
+.search-input::placeholder { color: var(--wood-warm); }
+
+.search-btn {
+  background: var(--wood-dark);
+  color: var(--cream);
+  border: none;
+  padding: 0.7rem 1.3rem;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.search-btn:hover { background: var(--red); }
+
+/* ── ALBUM GRID ─────────────────────────────────────────────────────────── */
+.album-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(215px, 1fr));
+  gap: 1.5rem;
+}
+
+.album-card {
+  background: var(--wood-mid);
+  border: 1px solid var(--border-dark);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background-image:
+    repeating-linear-gradient(
+      91deg,
+      transparent 0px, transparent 14px,
+      rgba(100,60,20,0.04) 14px, rgba(100,60,20,0.04) 15px
+    ),
+    linear-gradient(170deg, #e8d5b8 0%, #d4bf9a 100%);
+}
+
+.album-art {
+  width: 100%;
+  aspect-ratio: 1;
+  position: relative;
+  overflow: hidden;
+  background: #121212;
+}
+
+.album-cover-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.album-card:hover .album-cover-img {
+  transform: scale(1.04);
+}
+
+.format-pill {
+  position: absolute;
+  top: 0.6rem; left: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.22rem 0.6rem;
+  z-index: 5;
+  border: 1px solid;
+}
+.format-pill.vinyl   { background: #000; border-color: #333; color: #fff; }
+.format-pill.cd      { background: var(--wood-dark); border-color: var(--wood-warm); color: var(--cream); }
+.format-pill.digital { background: var(--red); border-color: var(--red-hot); color: var(--cream); }
+
+.album-info {
+  padding: 1.2rem 1.2rem 1.4rem;
+  border-top: 1px solid var(--border-dark);
+}
+
+.album-title {
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: 1.05rem;
+  color: var(--wood-deep);
+  margin-bottom: 0.3rem;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.album-artist {
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  margin-bottom: 0.85rem;
+}
+
+.album-tags {
+  display: flex; gap: 0.4rem; flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.tag {
+  font-family: var(--font-display);
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  background: rgba(120,70,20,0.1);
+  padding: 0.18rem 0.5rem;
+  border: 1px solid var(--border);
+}
+
+.album-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.album-price {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  color: var(--wood-deep);
+}
+
+.add-btn {
+  background: transparent;
+  border: 1.5px solid var(--wood-warm);
+  color: var(--wood-dark);
+  padding: 0.45rem 0.9rem;
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.add-btn:hover { background: var(--red); color: var(--cream); border-color: var(--red); }
+.add-btn.added { background: transparent; border-color: var(--wood-mid); color: var(--ink-dim); }
+
+/* ── CART ───────────────────────────────────────────────────────────────── */
+.cart-overlay {
+  position: fixed; inset: 0;
+  background: rgba(40,20,5,0.55);
+  z-index: 300;
+  display: none;
+}
+.cart-overlay.open { display: block; }
+
+.cart-sidebar {
+  position: fixed; right: -440px; top: 0; bottom: 0;
+  width: 420px;
+  background: var(--cream);
+  border-left: 3px solid var(--wood-warm);
+  z-index: 301;
+  display: none; flex-direction: column;
+}
+.cart-sidebar.open { display: flex; right: 0; }
+
+.cart-head {
+  padding: 1.4rem 1.8rem;
+  border-bottom: 2px solid var(--wood-warm);
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--wood-deep);
+}
+.cart-head h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cream);
+}
+.cart-close {
+  background: none; border: 1px solid rgba(255,255,255,0.2);
+  color: var(--wood-mid); width: 32px; height: 32px;
+  cursor: pointer; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center;
+}
+.cart-close:hover { border-color: var(--red); color: var(--red); }
+
+.cart-items { flex: 1; overflow-y: auto; padding: 1rem 1.8rem; }
+
+.cart-empty {
+  text-align: center; padding: 3rem 0;
+  font-family: var(--font-body); font-style: italic;
+  color: var(--ink-dim); font-size: 0.95rem; line-height: 1.7;
+}
+
+.cart-item {
+  display: flex; gap: 0.9rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+.cart-item-img {
+  width: 46px; height: 46px; object-fit: cover; flex-shrink: 0;
+  border: 1px solid var(--border);
+}
+.cart-item-info { flex: 1; }
+.cart-item-title {
+  font-family: var(--font-body); font-style: italic;
+  font-size: 0.9rem; color: var(--ink); margin-bottom: 0.2rem;
+}
+.cart-item-sub {
+  font-family: var(--font-display);
+  font-size: 0.6rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-dim);
+}
+.cart-item-price {
+  font-family: var(--font-display);
+  font-size: 0.95rem; color: var(--wood-deep); letter-spacing: 0.04em;
+}
+.cart-item-remove {
+  background: none; border: none; color: var(--wood-warm);
+  cursor: pointer; font-size: 0.85rem; padding: 0.3rem;
+}
+.cart-item-remove:hover { color: var(--red); }
+
+.cart-foot {
+  padding: 1.5rem 1.8rem;
+  border-top: 2px solid var(--wood-warm);
+  background: var(--wood-light);
+}
+.cart-total-row {
+  display: flex; justify-content: space-between; align-items: baseline;
+  margin-bottom: 1.3rem;
+}
+.cart-total-label {
+  font-family: var(--font-display); font-size: 0.65rem;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--ink-dim);
+}
+.cart-total-amount {
+  font-family: var(--font-display); font-size: 2.2rem;
+  letter-spacing: 0.04em; color: var(--wood-deep);
+}
+.btn-checkout {
+  width: 100%; background: var(--red); color: var(--cream);
+  border: none; padding: 1rem;
+  font-family: var(--font-display); font-size: 0.78rem;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  cursor: pointer;
+}
+.btn-checkout:hover { background: var(--red-hot); }
+
+/* ── FOOTER ─────────────────────────────────────────────────────────────── */
+footer {
+  background: var(--wood-deep);
+  border-top: 3px solid var(--red);
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  padding: 3.5rem 3rem;
+}
+
+.footer-logo {
+  font-family: var(--font-display); font-size: 2rem;
+  letter-spacing: 0.14em; color: var(--cream);
+  text-decoration: none; display: block;
+  margin-bottom: 1rem; text-transform: uppercase;
+}
+.footer-logo span { color: var(--red); }
+.footer-about {
+  font-family: var(--font-body); font-size: 0.9rem;
+  color: var(--wood-mid); line-height: 1.75;
+}
+
+footer h4 {
+  font-family: var(--font-display); font-size: 0.65rem;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--red); margin-bottom: 1.2rem;
+}
+
+footer ul { list-style: none; }
+footer ul li {
+  font-family: var(--font-body); margin-bottom: 0.65rem;
+  font-size: 0.88rem; color: var(--wood-mid);
+  cursor: pointer;
+}
+footer ul li:hover { color: var(--cream); }
+
+.footer-bar {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 1.1rem 3rem;
+  display: flex; justify-content: space-between;
+  font-family: var(--font-body); font-size: 0.78rem;
+  color: var(--wood-warm); opacity: 0.7;
+  background: var(--wood-deep);
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  nav { padding: 0 1.5rem; }
+  nav ul { display: none; }
+  .hero { grid-template-columns: 1fr; padding: 3rem 1.5rem; min-height: auto; gap: 3rem; }
+  .hero-vinyl-scene { min-height: 280px; }
+  .section { padding: 3rem 1.5rem; }
+  .format-strip { grid-template-columns: 1fr; }
+  .fsi { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  footer { grid-template-columns: 1fr 1fr; padding: 2.5rem 1.5rem; }
+  .footer-bar { padding: 1rem 1.5rem; }
+  .cart-sidebar { width: 100%; right: -100%; }
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--wood-light); }
+::-webkit-scrollbar-thumb { background: var(--wood-warm); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="logo">WAX<span>HAUS</span></a>
+  <ul>
+    <li><a href="#shop">Shop</a></li>
+    <li><a href="#formats">Formats</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <button class="nav-cart" onclick="toggleCart()">
+    Cart <span id="cart-count">0</span>
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">Est. 2024 &mdash; Vinyl · CD · Digital</p>
+    <h1>Sound<br>That <span class="red serif">Moves</span><br>You</h1>
+    <p class="hero-desc">Premium records, rare pressings, and instant digital downloads. Every format, every genre. Curated for those who listen with intention.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Browse Catalogue</button>
+      <button class="btn-ghost" onclick="document.getElementById('formats').scrollIntoView({behavior:'smooth'})">Our Formats</button>
+    </div>
+  </div>
+
+  <div class="hero-vinyl-scene">
+    <div class="tonearm">
+      <div class="tonearm-pivot"></div>
+      <div class="tonearm-arm">
+        <div class="tonearm-head"></div>
+      </div>
+    </div>
+    <div class="vinyl-disc-wrap">
+      <div class="vinyl-disc">
+        <div class="grooves"></div>
+        <div class="rings"></div>
+        <div class="disc-label">
+          <div class="disc-label-text">Wax<br>Haus</div>
+        </div>
+        <div class="disc-hole"></div>
+        <div class="sheen"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="format-strip" id="formats">
+  <div class="fsi">
+    <div class="fsi-icon">◎</div>
+    <div>
+      <div class="fsi-label">Vinyl</div>
+      <div class="fsi-desc">180g pressings, limited editions.</div>
+    </div>
+  </div>
+  <div class="fsi">
+    <div class="fsi-icon">⊙</div>
+    <div>
+      <div class="fsi-label">CD</div>
+      <div class="fsi-desc">Digipak &amp; jewel case with booklet.</div>
+    </div>
+  </div>
+  <div class="fsi">
+    <div class="fsi-icon">↓</div>
+    <div>
+      <div class="fsi-label">Digital</div>
+      <div class="fsi-desc">FLAC, MP3 &amp; WAV instant download.</div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="shop">
+  <div class="section-head">
+    <h2 class="section-title">Catalogue</h2>
+    <span class="section-count" id="result-count">— items</span>
+  </div>
+  <div class="search-bar">
+    <input class="search-input" type="text" id="search-input"
+      placeholder="Search by title, artist or genre…"
+      oninput="filterAlbums()">
+    <button class="search-btn">Search</button>
+  </div>
+  <div class="format-tabs">
+    <button class="tab active" onclick="setFormat('all',this)">All</button>
+    <button class="tab" onclick="setFormat('vinyl',this)">Vinyl</button>
+    <button class="tab" onclick="setFormat('cd',this)">CD</button>
+    <button class="tab" onclick="setFormat('digital',this)">Digital</button>
+  </div>
+  <div class="album-grid" id="album-grid"></div>
+</section>
+
+<footer>
+  <div>
+    <a href="#" class="footer-logo">WAX<span>HAUS</span></a>
+    <p class="footer-about">Premium vinyl, CDs, and digital downloads. Carefully curated, responsibly sourced, delivered to your door.</p>
+  </div>
+  <div>
+    <h4>Shop</h4>
+    <ul><li>Vinyl</li><li>CDs</li><li>Digital</li><li>New Arrivals</li><li>Sale</li></ul>
+  </div>
+  <div>
+    <h4>Info</h4>
+    <ul><li>About</li><li>Shipping</li><li>Returns</li><li>FAQ</li></ul>
+  </div>
+  <div>
+    <h4>Connect</h4>
+    <ul><li>Instagram</li><li>Newsletter</li><li>Wholesale</li><li>Contact</li></ul>
+  </div>
+</footer>
+<div class="footer-bar">
+  <span>© 2025 WAXHAUS. All rights reserved.</span>
+  <span>Vinyl · CD · Digital</span>
+</div>
+
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-head">
+    <h2>Your Cart</h2>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-items" id="cart-items">
+    <p class="cart-empty">Your cart is empty.<br>Start browsing the catalogue.</p>
+  </div>
+  <div class="cart-foot">
+    <div class="cart-total-row">
+      <span class="cart-total-label">Total</span>
+      <span class="cart-total-amount" id="cart-total">₹0</span>
+    </div>
+    <button class="btn-checkout">Proceed to Checkout</button>
+  </div>
+</div>
+
+<script>
+// ── DATABASE ──────────────────────────────────────────────────────────────────
+const albumsDB = [
+  // ── Kanye West ───────────────────────────────────────────────────────────
+  { id:13, title:"The College Dropout",          artist:"Kanye West",       genre:"Hip-Hop",    year:2004, label:"Roc-A-Fella",   tracks:22, cover: "covers/college-dropout.jpg" },
+  { id:14, title:"Late Registration",            artist:"Kanye West",       genre:"Hip-Hop",    year:2005, label:"Roc-A-Fella",   tracks:21, cover: "covers/late-registration.jpg" },
+  { id:15, title:"Graduation",                   artist:"Kanye West",       genre:"Hip-Hop",    year:2007, label:"Roc-A-Fella",   tracks:13, cover: "covers/graduation.jpg" },
+  { id:16, title:"My Beautiful Dark Twisted Fantasy", artist:"Kanye West",  genre:"Hip-Hop",    year:2010, label:"Def Jam",       tracks:13, cover: "covers/mbdtf.jpg" },
+  
+  // ── Common ───────────────────────────────────────────────────────────────
+  { id:17, title:"Be",                           artist:"Common",           genre:"Hip-Hop",    year:2005, label:"GOOD Music",    tracks:11, cover: "covers/be.png" },
+  
+  // ── Madvillain ───────────────────────────────────────────────────────────
+  { id:18, title:"Madvillainy",                  artist:"Madvillain",       genre:"Hip-Hop",    year:2004, label:"Stones Throw",  tracks:22, cover: "covers/madvillainy.jpg" },
+  
+  // ── Tyler, the Creator ───────────────────────────────────────────────────
+  { id:19, title:"IGOR",                         artist:"Tyler, the Creator", genre:"Hip-Hop",  year:2019, label:"Columbia",      tracks:12, cover: "covers/igor.jpg" },
+  
+  // ── JPEGMAFIA ────────────────────────────────────────────────────────────
+  { id:20, title:"I Lay Down My Life for You",   artist:"JPEGMAFIA",        genre:"Experimental Hip-Hop", year:2024, label:"EQT", tracks:15, cover: "covers/ilmldfy.jpg" },
+  
+  // ── Quadeca ──────────────────────────────────────────────────────────────
+  { id:21, title:"I Didn't Mean to Haunt You",   artist:"Quadeca",          genre:"Indie Hip-Hop", year:2022, label:"Independent", tracks:14, cover: "covers/idmthy.jpg" },
+  { id:22, title:"Vanisher: Horizon Scraper",    artist:"Quadeca",          genre:"Indie Hip-Hop", year:2024, label:"Independent", tracks:12, cover: "covers/vanisher.jpg" },
+  { id:23, title:"Scrapyard",                    artist:"Quadeca",          genre:"Indie Hip-Hop", year:2024, label:"Independent", tracks:11, cover: "covers/scrap.jpg" },
+  
+  // ── Justice ──────────────────────────────────────────────────────────────
+  { id:24, title:"†  (Cross)",                  artist:"Justice",           genre:"Electronic", year:2007, label:"Ed Banger",     tracks:11, cover: "covers/cross.jpg" },
+  { id:25, title:"Hyperdrama",                   artist:"Justice",           genre:"Electronic", year:2024, label:"Ed Banger",     tracks:12, cover: "covers/hyperdrama.jpg" },
+  
+  // ── The Weeknd ───────────────────────────────────────────────────────────
+  { id:26, title:"House of Balloons",            artist:"The Weeknd",        genre:"R&B",        year:2011, label:"XO",           tracks:9,  cover: "covers/hob.jpg" },
+  { id:27, title:"Dawn FM",                      artist:"The Weeknd",        genre:"R&B",        year:2022, label:"XO / Republic", tracks:16, cover: "covers/dfm.png" },
+  { id:28, title:"Hurry Up Tomorrow",            artist:"The Weeknd",        genre:"R&B",        year:2025, label:"XO / Republic", tracks:22, cover: "covers/hut.png" },
+  
+  // ── Magdalena Bay ────────────────────────────────────────────────────────
+  { id:29, title:"Imaginal Disk",                artist:"Magdalena Bay",     genre:"Synth-Pop",  year:2024, label:"Neon Gold",     tracks:17, cover: "covers/id.jpg" },
+  
+  // ── Tame Impala ──────────────────────────────────────────────────────────
+  { id:30, title:"Lonerism",                     artist:"Tame Impala",       genre:"Psychedelic Rock", year:2012, label:"Modular", tracks:13, cover: "covers/lonerism.jpg" },
+  { id:31, title:"Currents",                     artist:"Tame Impala",       genre:"Psychedelic Pop",  year:2015, label:"Modular", tracks:13, cover: "covers/currents.png" },
+  
+  // ── Sampha ───────────────────────────────────────────────────────────────
+  { id:32, title:"Process",                      artist:"Sampha",            genre:"Soul",        year:2017, label:"Young Turks",  tracks:11, cover: "covers/process.jpg" },
+  
+  // ── Kendrick Lamar ───────────────────────────────────────────────────────
+  { id:33, title:"Mr. Morale & The Big Steppers", artist:"Kendrick Lamar",  genre:"Hip-Hop",    year:2022, label:"pgLang / Aftermath", tracks:18, cover: "covers/morale.png" },
+  { id:34, title:"GNX",                          artist:"Kendrick Lamar",    genre:"Hip-Hop",    year:2024, label:"pgLang",        tracks:12, cover: "covers/gnx.jpg" },
+  
+  // ── James Blake ──────────────────────────────────────────────────────────
+  { id:35, title:"Trying Times",                 artist:"James Blake",       genre:"Electronic Soul", year:2024, label:"Republic",  tracks:10, cover: "covers/tt.jpg" },
+  
+  // ── Daft Punk ────────────────────────────────────────────────────────────
+  { id:36, title:"Discovery",                    artist:"Daft Punk",         genre:"Electronic", year:2001, label:"Virgin",        tracks:14, cover: "covers/discovery.png" },
+  { id:37, title:"Random Access Memories",       artist:"Daft Punk",         genre:"Electronic", year:2013, label:"Columbia",      tracks:13, cover: "covers/ram.jpg" },
+];
+
+const inventoryDB = [
+  { album_id:13, format:'vinyl',   price:3299, stock:8  },
+  { album_id:14, format:'vinyl',   price:3499, stock:6  },
+  { album_id:15, format:'vinyl',   price:3299, stock:9  },
+  { album_id:16, format:'vinyl',   price:3799, stock:5  },
+  { album_id:13, format:'cd',      price:799,  stock:20 },
+  { album_id:14, format:'cd',      price:799,  stock:18 },
+  { album_id:15, format:'cd',      price:799,  stock:22 },
+  { album_id:16, format:'cd',      price:899,  stock:14 },
+  { album_id:13, format:'digital', price:299,  stock:999 },
+  { album_id:14, format:'digital', price:299,  stock:999 },
+  { album_id:15, format:'digital', price:299,  stock:999 },
+  { album_id:16, format:'digital', price:349,  stock:999 },
+  { album_id:17, format:'vinyl',   price:2799, stock:7  },
+  { album_id:17, format:'cd',      price:749,  stock:15 },
+  { album_id:17, format:'digital', price:249,  stock:999 },
+  { album_id:18, format:'vinyl',   price:3999, stock:4  },
+  { album_id:18, format:'cd',      price:999,  stock:10 },
+  { album_id:18, format:'digital', price:299,  stock:999 },
+  { album_id:19, format:'vinyl',   price:3299, stock:7  },
+  { album_id:19, format:'digital', price:299,  stock:999 },
+  { album_id:20, format:'digital', price:199,  stock:999 },
+  { album_id:21, format:'digital', price:199,  stock:999 },
+  { album_id:22, format:'digital', price:199,  stock:999 },
+  { album_id:23, format:'digital', price:149,  stock:999 },
+  { album_id:24, format:'vinyl',   price:3499, stock:6  },
+  { album_id:24, format:'digital', price:249,  stock:999 },
+  { album_id:25, format:'vinyl',   price:2999, stock:10 },
+  { album_id:25, format:'digital', price:249,  stock:999 },
+  { album_id:26, format:'vinyl',   price:3799, stock:4  },
+  { album_id:26, format:'digital', price:199,  stock:999 },
+  { album_id:27, format:'vinyl',   price:2999, stock:9  },
+  { album_id:27, format:'digital', price:249,  stock:999 },
+  { album_id:28, format:'vinyl',   price:3299, stock:11 },
+  { album_id:28, format:'digital', price:299,  stock:999 },
+  { album_id:29, format:'vinyl',   price:2999, stock:8  },
+  { album_id:29, format:'digital', price:199,  stock:999 },
+  { album_id:30, format:'vinyl',   price:3299, stock:7  },
+  { album_id:30, format:'digital', price:249,  stock:999 },
+  { album_id:31, format:'vinyl',   price:3299, stock:9  },
+  { album_id:31, format:'digital', price:249,  stock:999 },
+  { album_id:32, format:'vinyl',   price:2799, stock:6  },
+  { album_id:32, format:'digital', price:199,  stock:999 },
+  { album_id:33, format:'vinyl',   price:3499, stock:5  },
+  { album_id:33, format:'digital', price:299,  stock:999 },
+  { album_id:34, format:'digital', price:299,  stock:999 },
+  { album_id:35, format:'vinyl',   price:2799, stock:8  },
+  { album_id:35, format:'digital', price:199,  stock:999 },
+  { album_id:36, format:'vinyl',   price:3299, stock:7  },
+  { album_id:36, format:'cd',      price:849,  stock:18 },
+  { album_id:36, format:'digital', price:249,  stock:999 },
+  { album_id:37, format:'vinyl',   price:3799, stock:5  },
+  { album_id:37, format:'cd',      price:999,  stock:12 },
+  { album_id:37, format:'digital', price:299,  stock:999 },
+];
+
+function queryAlbums(format = 'all', search = '') {
+  let rows = inventoryDB.map(inv => {
+    const a = albumsDB.find(x => x.id === inv.album_id);
+    return a ? { ...a, format: inv.format, price: inv.price, stock: inv.stock } : null;
+  }).filter(Boolean);
+  if (format !== 'all') rows = rows.filter(r => r.format === format);
+  if (search.trim()) {
+    const s = search.toLowerCase();
+    rows = rows.filter(r =>
+      r.title.toLowerCase().includes(s) ||
+      r.artist.toLowerCase().includes(s) ||
+      r.genre.toLowerCase().includes(s)
+    );
+  }
+  return rows;
+}
+
+const labelPalette = ['#c8180e','#a01208','#b83210','#8a1a08','#d04020','#903010'];
+const labelColor = id => labelPalette[id % labelPalette.length];
+
+let currentFormat = 'all';
+let currentSearch = '';
+
+function renderGrid() {
+  const data = queryAlbums(currentFormat, currentSearch);
+  const grid = document.getElementById('album-grid');
+  document.getElementById('result-count').textContent =
+    `${data.length} item${data.length !== 1 ? 's' : ''}`;
+
+  if (!data.length) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:5rem;font-family:var(--font-body);font-style:italic;color:var(--ink-dim);font-size:1rem;">No results found.</div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map(a => {
+    const col  = labelColor(a.id);
+    const fmt  = a.format;
+    const icon = fmt === 'vinyl' ? '◎' : fmt === 'cd' ? '⊙' : '↓';
+
+    return `
+    <div class="album-card" data-id="${a.id}" data-format="${fmt}">
+      <div class="album-art">
+        <span class="format-pill ${fmt}">${fmt.toUpperCase()}</span>
+        <img class="album-cover-img" src="${a.cover}" alt="${a.title}" loading="lazy" />
+      </div>
+      <div class="album-info">
+        <div class="album-title" title="${a.title}">${a.title}</div>
+        <div class="album-artist">${a.artist}</div>
+        <div class="album-tags">
+          <span class="tag">${a.genre}</span>
+          <span class="tag">${a.year}</span>
+          <span class="tag">${a.tracks} tracks</span>
+        </div>
+        <div class="album-bottom">
+          <span class="album-price">₹${a.price.toLocaleString()}</span>
+          <button class="add-btn"
+            onclick="addToCart(${a.id},'${fmt}',${a.price},\`${a.title}\`,\`${a.artist}\`,'${col}',this)">
+            ${icon} Add
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setFormat(fmt, btn) {
+  currentFormat = fmt;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid();
+}
+
+function filterAlbums() {
+  currentSearch = document.getElementById('search-input').value;
+  renderGrid();
+}
+
+// ── CART ──────────────────────────────────────────────────────────────────────
+let cart = [];
+
+function addToCart(id, format, price, title, artist, color, btn) {
+  const key = `${id}-${format}`;
+  const hit = cart.find(i => i.key === key);
+  if (hit) { hit.qty++; } else { cart.push({ key, id, format, price, title, artist, color, qty:1 }); }
+  btn.textContent = '✓ Added';
+  btn.classList.add('added');
+  setTimeout(() => {
+    const icon = format === 'vinyl' ? '◎' : format === 'cd' ? '⊙' : '↓';
+    btn.textContent = `${icon} Add`;
+    btn.classList.remove('added');
+  }, 1400);
+  renderCart();
+}
+
+function removeFromCart(key) {
+  cart = cart.filter(i => i.key !== key);
+  renderCart();
+}
+
+function renderCart() {
+  const count = cart.reduce((s,i) => s + i.qty, 0);
+  const total = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-total').textContent = `₹${total.toLocaleString()}`;
+  const el = document.getElementById('cart-items');
+  if (!cart.length) {
+    el.innerHTML = `<p class="cart-empty">Your cart is empty.<br>Start browsing the catalogue.</p>`;
+    return;
+  }
+  el.innerHTML = cart.map(item => {
+    const icon = item.format === 'vinyl' ? '◎' : item.format === 'cd' ? '⊙' : '↓';
+    const albumObj = albumsDB.find(x => x.id === item.id);
+    const imgUrl = albumObj ? albumObj.cover : '';
+
+    return `
+    <div class="cart-item">
+      <img class="cart-item-img" src="${imgUrl}" alt="${item.title}" />
+      <div class="cart-item-info">
+        <div class="cart-item-title">${item.title}</div>
+        <div class="cart-item-sub">${item.artist} · ${item.format} · qty ${item.qty}</div>
+      </div>
+      <span class="cart-item-price">₹${(item.price * item.qty).toLocaleString()}</span>
+      <button class="cart-item-remove" onclick="removeFromCart('${item.key}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function toggleCart() {
+  document.getElementById('cart-sidebar').classList.toggle('open');
+  document.getElementById('cart-overlay').classList.toggle('open');
+}
+
+renderGrid();
+</script>
+</body>
+</html>
