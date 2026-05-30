@@ -138,12 +138,9 @@ nav ul a:hover { color: var(--cream); }
 
 /* ── HERO ───────────────────────────────────────────────────────────────── */
 .hero {
-  min-height: 88vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;
-  padding: 0 3rem;
-  gap: 2rem;
+  min-height: auto;
+  display: block;
+  padding: 5rem 3rem;
   position: relative;
   overflow: hidden;
   border-bottom: 1px solid var(--border-dark);
@@ -238,173 +235,22 @@ nav ul a:hover { color: var(--cream); }
 }
 .btn-ghost:hover { border-color: var(--wood-dark); color: var(--wood-deep); background: rgba(120,70,20,0.06); }
 
-/* ── VINYL SCENE ────────────────────────────────────────────────────────── */
-.hero-vinyl-scene {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  min-height: 400px;
-}
 
-.tonearm {
-  position: absolute;
-  top: 12%;
-  right: 8%;
-  width: 130px;
-  height: 130px;
-  z-index: 10;
-  pointer-events: none;
-}
 
-.tonearm-pivot {
-  position: absolute;
-  top: 0; right: 0;
-  width: 22px; height: 22px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #d4a060, var(--wood-dark));
-  border: 2px solid var(--wood-warm);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
-  z-index: 2;
-}
 
-.tonearm-arm {
-  position: absolute;
-  top: 11px; right: 11px;
-  width: 110px; height: 3px;
-  background: linear-gradient(90deg, var(--wood-warm), var(--wood-dark));
-  transform-origin: right center;
-  transform: rotate(-32deg);
-  border-radius: 2px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
-}
 
-.tonearm-head {
-  position: absolute;
-  left: 0; top: -5px;
-  width: 14px; height: 12px;
-  background: var(--wood-deep);
-  border-radius: 2px;
-}
 
-.vinyl-disc-wrap {
-  position: relative;
-  width: min(52vw, 420px);
-  height: min(52vw, 420px);
-}
 
-.vinyl-disc {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  animation: vinylSpin 2.8s linear infinite;
-  position: relative;
-  box-shadow:
-    0 8px 40px rgba(80,40,10,0.28),
-    0 2px 12px rgba(80,40,10,0.18),
-    inset 0 0 30px rgba(0,0,0,0.3);
-}
 
-.vinyl-disc .grooves {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    conic-gradient(
-      from 0deg,
-      #1a0f0a 0deg,  #221408 20deg,
-      #1a0f0a 40deg, #221408 60deg,
-      #1a0f0a 80deg, #221408 100deg,
-      #1a0f0a 120deg,#221408 140deg,
-      #1a0f0a 160deg,#221408 180deg,
-      #1a0f0a 200deg,#221408 220deg,
-      #1a0f0a 240deg,#221408 260deg,
-      #1a0f0a 280deg,#221408 300deg,
-      #1a0f0a 320deg,#221408 340deg,
-      #1a0f0a 360deg
-    );
-}
 
-.vinyl-disc .rings {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, transparent 28%, rgba(255,255,255,0.015) 28.5%, transparent 29%),
-    radial-gradient(circle, transparent 33%, rgba(255,255,255,0.012) 33.5%, transparent 34%),
-    radial-gradient(circle, transparent 38%, rgba(255,255,255,0.015) 38.5%, transparent 39%),
-    radial-gradient(circle, transparent 43%, rgba(255,255,255,0.01)  43.5%, transparent 44%),
-    radial-gradient(circle, transparent 48%, rgba(255,255,255,0.014) 48.5%, transparent 49%),
-    radial-gradient(circle, transparent 52%, rgba(255,255,255,0.01)  52.5%, transparent 53%),
-    radial-gradient(circle, transparent 57%, rgba(255,255,255,0.013) 57.5%, transparent 58%),
-    radial-gradient(circle, transparent 62%, rgba(255,255,255,0.01)  62.5%, transparent 63%),
-    radial-gradient(circle, transparent 67%, rgba(255,255,255,0.012) 67.5%, transparent 68%),
-    radial-gradient(circle, transparent 72%, rgba(255,255,255,0.01)  72.5%, transparent 73%),
-    radial-gradient(circle, transparent 77%, rgba(255,255,255,0.014) 77.5%, transparent 78%),
-    radial-gradient(circle, transparent 82%, rgba(255,255,255,0.01)  82.5%, transparent 83%),
-    radial-gradient(circle, transparent 87%, rgba(255,255,255,0.012) 87.5%, transparent 88%);
-}
 
-.vinyl-disc .disc-label {
-  position: absolute;
-  inset: 31%;
-  border-radius: 50%;
-  background: radial-gradient(circle at 40% 38%, #d4622a, var(--red-dim));
-  display: flex; align-items: center; justify-content: center;
-  z-index: 2;
-  box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
-}
 
-.disc-label-text {
-  font-family: var(--font-display);
-  font-size: clamp(0.45rem, 1vw, 0.75rem);
-  letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.9);
-  text-align: center;
-  text-transform: uppercase;
-  line-height: 1.5;
-}
 
-.vinyl-disc .disc-hole {
-  position: absolute;
-  inset: 47.5%;
-  border-radius: 50%;
-  background: var(--cream);
-  z-index: 3;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.4);
-}
 
-.vinyl-disc .sheen {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(255,255,255,0.06) 45deg,
-    transparent 90deg,
-    rgba(255,255,255,0.03) 180deg,
-    transparent 270deg
-  );
-  z-index: 4;
-  pointer-events: none;
-}
 
-@keyframes vinylSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
 
-.vinyl-disc-wrap::after {
-  content: '';
-  position: absolute;
-  bottom: -24px;
-  left: 10%; right: 10%;
-  height: 24px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(80,40,10,0.22) 0%, transparent 70%);
-  pointer-events: none;
-}
+
+
 
 /* ── FORMAT STRIP ───────────────────────────────────────────────────────── */
 .format-strip {
@@ -797,11 +643,10 @@ footer ul li:hover { color: var(--cream); }
   nav { padding: 0 1.5rem; }
   nav ul { display: none; }
   .hero { grid-template-columns: 1fr; padding: 3rem 1.5rem; min-height: auto; gap: 3rem; }
-  .hero-vinyl-scene { min-height: 280px; }
-  .section { padding: 3rem 1.5rem; }
+    .section { padding: 3rem 1.5rem; }
   .format-strip { grid-template-columns: 1fr; }
   .fsi { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  footer { grid-template-columns: 1fr 1fr; padding: 2.5rem 1.5rem; }
+  footer { grid-template-columns: 1fr; padding: 2.5rem 1.5rem; }
   .footer-bar { padding: 1rem 1.5rem; }
   .cart-sidebar { width: 100%; right: -100%; }
 }
@@ -834,26 +679,6 @@ footer ul li:hover { color: var(--cream); }
     <div class="hero-actions">
       <button class="btn-primary" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">Browse Catalogue</button>
       <button class="btn-ghost" onclick="document.getElementById('formats').scrollIntoView({behavior:'smooth'})">Our Formats</button>
-    </div>
-  </div>
-
-  <div class="hero-vinyl-scene">
-    <div class="tonearm">
-      <div class="tonearm-pivot"></div>
-      <div class="tonearm-arm">
-        <div class="tonearm-head"></div>
-      </div>
-    </div>
-    <div class="vinyl-disc-wrap">
-      <div class="vinyl-disc">
-        <div class="grooves"></div>
-        <div class="rings"></div>
-        <div class="disc-label">
-          <div class="disc-label-text">Wax<br>Haus</div>
-        </div>
-        <div class="disc-hole"></div>
-        <div class="sheen"></div>
-      </div>
     </div>
   </div>
 </section>
